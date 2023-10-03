@@ -1,5 +1,3 @@
 #!/usr/bin/python3
-num = 0
-while num < 99:
-    print("{:d} = 0x{:02X}".format(num, num))
-    num += 1
+for num in range(99):
+    print("{:d} = 0x{:x}".format(num, num))
