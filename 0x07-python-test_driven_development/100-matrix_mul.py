@@ -1,55 +1,70 @@
 #!/usr/bin/python3
 """
-Contains the matrix_mul function
+    100-matrix_mul Module
 """
 
 
 def matrix_mul(m_a, m_b):
-    """Multiply two matrices(lists of lists of integers/floats)"""
+    """
+        Multiplies 2 matrices
+
+        Args:
+            m_a: first matrix(2D List)
+            m_b: second matrix(2D List)
+
+        Returns:
+            the product of two matrices
+    """
+
+    prev_len = 0
     if type(m_a) is not list:
         raise TypeError("m_a must be a list")
-    l1 = len(m_a)
-    if l1 == 0:
-        raise ValueError("m_a can't be empty")
-    l2 = None
-    for i in m_a:
-        if type(i) is not list:
-            raise TypeError("m_a must be a list of lists")
-        if l2 is None:
-            l2 = len(i)
-            if l2 == 0:
-                raise ValueError("m_a can't be empty")
-        if l2 != len(i):
-            raise TypeError("each row of m_a must should be of the same size")
-        for j in i:
-            if type(j) is not int and type(j) is not float:
-                raise TypeError("m_a should contain only integers or floats")
     if type(m_b) is not list:
         raise TypeError("m_b must be a list")
-    if len(m_b) == 0:
+    if not m_a:
+        raise ValueError("m_a can't be empty")
+    if not m_b:
         raise ValueError("m_b can't be empty")
-    l3 = None
-    for i in m_b:
-        if type(i) is not list:
+
+    for blocks in m_a:
+        if type(blocks) is not list:
+            raise TypeError("m_a must be a list of lists")
+        if not blocks:
+            raise ValueError("m_a can't be empty")
+        for integers in blocks:
+            if type(integers) is not int and type(integers) is not float:
+                raise TypeError("m_a should contain only integers or floats")
+        if len(blocks) != prev_len and prev_len != 0:
+            raise TypeError("each row of m_a must be of the same size")
+        prev_len = len(blocks)
+
+    prev_len = 0
+    for blocks in m_b:
+        if type(blocks) is not list:
             raise TypeError("m_b must be a list of lists")
-        if l3 is None:
-            l3 = len(i)
-            if l3 == 0:
-                raise ValueError("m_b can't be empty")
-        if l3 != len(i):
-            raise TypeError("each row of m_b must should be of the same size")
-        for j in i:
-            if type(j) is not int and type(j) is not float:
+        if not blocks:
+            raise ValueError("m_b can't be empty")
+        for integers in blocks:
+            if type(integers) is not int and type(integers) is not float:
                 raise TypeError("m_b should contain only integers or floats")
-    if l2 != len(m_b):
+        if len(blocks) != prev_len and prev_len != 0:
+            raise TypeError("each row of m_b must be of the same size")
+        prev_len = len(blocks)
+
+    if len(m_a[0]) != len(m_b):  # cols of m_a must be equal to rows of m_b
         raise ValueError("m_a and m_b can't be multiplied")
-    matrix = []
-    for i in range(l1):
-        l = []
-        for j in range(l3):
-            n = 0
-            for k in range(l2):
-                n += m_a[i][k] * m_b[k][j]
-            l.append(n)
-        matrix.append(l)
-    return matrix
+
+    result_list = list()    # multiplication starts
+    for row_a in range(len(m_a)):
+        flag = 0
+        inner_list = list()
+        for row_b in range(len(m_b)):
+            for col in range(len(m_b[row_b])):
+                if flag == 0:
+                    inner_list.append(m_a[row_a][row_b] * m_b[row_b][col])
+                else:
+                    inner_list[col] += (m_a[row_a][row_b] * m_b[row_b][col])
+            flag = 1
+        result_list.append(inner_list)  # multiplied matrix(2D List)
+
+    return result_list
